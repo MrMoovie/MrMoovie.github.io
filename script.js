@@ -5,20 +5,21 @@ function sendMessage() {
     document.getElementById("chat-box").innerHTML += '<div class="user-message">' + userInput + '</div>';
     document.getElementById("user-input").value = "";
 
-    // Simulate AI response (you can modify this logic)
-    var response = generateResponse(userInput);
-    document.getElementById("chat-box").innerHTML += '<div class="ai-message">' + response + '</div>';
+    // Send user input to server and get response
+    fetch('/message', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: userInput }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        var response = data.message;
+        document.getElementById("chat-box").innerHTML += '<div class="ai-message">' + response + '</div>';
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
 }
 
-function generateResponse(input) {
-    // Simulate responses based on input (you can customize this)
-    var responses = [
-        "Interesting!",
-        "Tell me more.",
-        "I'm not sure I understand.",
-        "That's cool!",
-        "How do you feel about that?"
-    ];
-    var randomIndex = Math.floor(Math.random() * responses.length);
-    return responses[randomIndex];
-}
